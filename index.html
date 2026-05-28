@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harshit Narula, MBBS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1f3c;
+    --navy-mid: #162a4e;
+    --navy-light: #1e3a6e;
+    --gold: #c9a84c;
+    --gold-light: #e2c47a;
+    --cream: #f7f4ef;
+    --cream-dark: #ede9e1;
+    --text: #1a1a2e;
+    --text-muted: #5a6070;
+    --white: #ffffff;
+    --sidebar-w: 260px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    background: var(--navy);
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  #sidebar::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -60px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .sidebar-header {
+    padding: 36px 28px 28px;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+    flex-shrink: 0;
+  }
+
+  .sidebar-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.2;
+  }
+
+  .sidebar-title {
+    font-size: 0.67rem;
+    color: var(--gold-light);
+    margin-top: 6px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .sidebar-sub {
+    font-size: 0.63rem;
+    color: rgba(255,255,255,0.4);
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  /* ── SLIDER TRACK ── */
+  .nav-track {
+    position: relative;
+    padding: 24px 0 24px;
+    flex: 1;
+  }
+
+  .slider-pill {
+    position: absolute;
+    left: 0; top: 0;
+    width: 3px;
+    background: var(--gold);
+    border-radius: 0 2px 2px 0;
+    box-shadow: 0 0 12px rgba(201,168,76,0.5);
+    transition: top 0.35s cubic-bezier(0.4,0,0.2,1), height 0.35s cubic-bezier(0.4,0,0.2,1);
+    pointer-events: none;
+  }
+
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 28px;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    font-size: 0.73rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s, background 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  nav a .nav-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.25);
+    flex-shrink: 0;
+    transition: background 0.25s, box-shadow 0.25s;
+  }
+
+  nav a:hover { color: rgba(255,255,255,0.85); }
+
+  nav a.active {
+    color: var(--white);
+    background: rgba(201,168,76,0.07);
+  }
+
+  nav a.active .nav-dot {
+    background: var(--gold);
+    box-shadow: 0 0 8px rgba(201,168,76,0.7);
+  }
+
+  .sidebar-links {
+    padding: 18px 28px 32px;
+    border-top: 1px solid rgba(201,168,76,0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-links a {
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .sidebar-links a:hover { color: var(--gold-light); }
+  .sidebar-links svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+
+  /* ── MAIN ── */
+  #main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    padding: 80px 72px;
+    border-bottom: 1px solid var(--cream-dark);
+    scroll-margin-top: 0;
+  }
+
+  .section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.7rem;
+    font-weight: 300;
+    color: var(--navy);
+    line-height: 1.1;
+    margin-bottom: 36px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+
+  /* ── HERO / ABOUT ── */
+  #about {
+    background: var(--white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #about::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 14px;
+  }
+
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4.2rem;
+    font-weight: 300;
+    color: var(--navy);
+    line-height: 1.05;
+    margin-bottom: 6px;
+  }
+
+  .hero-titles {
+    margin-bottom: 40px;
+  }
+
+  .hero-title-line {
+    font-size: 0.78rem;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    line-height: 2;
+  }
+
+  .hero-title-line span {
+    display: inline-block;
+    margin-right: 16px;
+    padding-right: 16px;
+    border-right: 1px solid var(--cream-dark);
+  }
+
+  .hero-title-line span:last-child { border-right: none; }
+
+  .hero-divider {
+    width: 48px;
+    height: 2px;
+    background: var(--gold);
+    margin-bottom: 32px;
+  }
+
+  .bio-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 56px;
+    align-items: start;
+  }
+
+  .bio-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.28rem;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--navy);
+    margin-bottom: 22px;
+  }
+
+  .bio-body {
+    font-size: 0.85rem;
+    line-height: 1.85;
+    color: var(--text-muted);
+  }
+
+  .philosophy-box {
+    background: var(--navy);
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .philosophy-box::before {
+    content: '"';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 8rem;
+    color: rgba(201,168,76,0.12);
+    position: absolute;
+    top: -20px; left: 16px;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .philosophy-label {
+    font-size: 0.63rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+
+  .philosophy-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-style: italic;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.85);
+    font-weight: 300;
+  }
+
+  .interest-tags { margin-top: 28px; }
+
+  .interest-tags h4 {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .tag {
+    display: inline-block;
+    background: var(--navy);
+    color: var(--gold-light);
+    font-size: 0.68rem;
+    padding: 4px 11px;
+    border-radius: 2px;
+    margin: 3px 3px 3px 0;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── SCORES ── */
+  .scores-row {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 14px;
+    margin-top: 40px;
+  }
+
+  .score-card {
+    background: var(--white);
+    border: 1px solid var(--cream-dark);
+    border-top: 3px solid var(--navy);
+    padding: 20px 16px;
+    text-align: center;
+  }
+
+  .score-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.1rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .score-label {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* ── TIMELINE ── */
+  .timeline { position: relative; padding-left: 24px; }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 8px; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--gold) 0%, rgba(201,168,76,0.1) 100%);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 0 0 36px 28px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -4.5px; top: 7px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid var(--cream);
+    box-shadow: 0 0 0 1px var(--gold);
+  }
+
+  .timeline-date {
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+
+  .timeline-role {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.3;
+  }
+
+  .timeline-org {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+    font-style: italic;
+  }
+
+  .elective-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .elective-card {
+    background: var(--white);
+    border-left: 3px solid var(--gold);
+    padding: 14px 16px;
+  }
+
+  .elective-card .e-title { font-size: 0.8rem; font-weight: 500; color: var(--navy); line-height: 1.4; }
+  .elective-card .e-meta  { font-size: 0.68rem; color: var(--text-muted); margin-top: 3px; }
+
+  /* ── RESEARCH CARDS ── */
+  .research-card {
+    background: var(--white);
+    border: 1px solid var(--cream-dark);
+    border-left: 4px solid var(--navy);
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    transition: box-shadow 0.2s;
+  }
+
+  .research-card:hover { box-shadow: 0 4px 20px rgba(13,31,60,0.07); }
+
+  .rc-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 5px;
+  }
+
+  .rc-meta {
+    font-size: 0.67rem;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .rc-body { font-size: 0.81rem; line-height: 1.7; color: var(--text); }
+
+  /* ── PUBLICATIONS ── */
+  .pub-group { margin-bottom: 32px; }
+
+  .pub-group-title {
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+
+  .pub-item {
+    padding: 13px 0;
+    border-bottom: 1px solid var(--cream-dark);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .pub-item:last-child { border-bottom: none; }
+
+  .pub-bullet {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--navy);
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+
+  .pub-text { font-size: 0.81rem; line-height: 1.65; color: var(--text); }
+  .pub-text strong { color: var(--navy); font-weight: 500; }
+  .pub-text a { color: var(--gold); text-decoration: none; font-size: 0.72rem; }
+  .pub-text a:hover { text-decoration: underline; }
+
+  /* ── PRESENTATIONS ── */
+  .pres-card {
+    background: var(--white);
+    border: 1px solid var(--cream-dark);
+    padding: 18px 22px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .pres-card:hover { border-color: var(--gold); box-shadow: 0 4px 18px rgba(201,168,76,0.1); }
+
+  .pres-badge {
+    background: var(--navy);
+    color: var(--gold-light);
+    font-size: 0.58rem;
+    padding: 4px 8px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .pres-badge.gold-badge  { background: var(--gold); color: var(--navy); font-weight: 600; }
+  .pres-badge.silver-badge{ background: #9ca3af; color: var(--white); }
+  .pres-badge.green-badge { background: #1e6e4e; color: #fff; }
+
+  .pres-title { font-size: 0.83rem; font-weight: 500; color: var(--navy); line-height: 1.5; margin-bottom: 3px; }
+  .pres-meta  { font-size: 0.7rem; color: var(--text-muted); font-style: italic; }
+
+  /* ── AWARDS ── */
+  .award-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 48px;
+  }
+
+  .award-card {
+    background: var(--white);
+    border: 1px solid var(--cream-dark);
+    border-top: 3px solid var(--navy);
+    padding: 18px 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .award-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(13,31,60,0.07); }
+
+  .award-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.02rem;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.3;
+    margin-bottom: 5px;
+  }
+
+  .award-meta { font-size: 0.69rem; color: var(--text-muted); font-style: italic; }
+
+  /* ── GALLERY / CAROUSEL ── */
+  .gallery-section { margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--cream-dark); }
+  .gallery-label { font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
+
+  .carousel {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/7;
+    overflow: hidden;
+    background: var(--navy-mid);
+  }
+
+  .carousel-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .carousel-slide {
+    min-width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  /* Caption overlay */
+  .carousel-slide .slide-caption {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 10px 18px;
+    background: linear-gradient(to top, rgba(13,31,60,0.85), transparent);
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.88);
+    letter-spacing: 0.04em;
+  }
+
+  /* Dot indicators */
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 12px;
+  }
+
+  .carousel-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--cream-dark);
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+    border: none;
+    padding: 0;
+  }
+
+  .carousel-dot.active {
+    background: var(--gold);
+    transform: scale(1.3);
+  }
+
+  /* Placeholder when no images loaded */
+  .carousel-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: rgba(255,255,255,0.3);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .carousel-placeholder svg {
+    width: 36px; height: 36px;
+    stroke: rgba(201,168,76,0.3);
+    fill: none;
+  }
+
+  /* ── PORTRAIT PHOTO ── */
+  .portrait-wrap {
+    position: absolute;
+    top: 64px;
+    right: 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .portrait {
+    width: 110px;
+    height: 140px;
+    border: 3px solid var(--cream-dark);
+    overflow: hidden;
+    background: var(--navy-mid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+  }
+
+  .portrait-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .portrait-placeholder svg {
+    width: 28px; height: 28px;
+    stroke: rgba(201,168,76,0.5);
+    fill: none;
+  }
+
+  .portrait-placeholder span {
+    font-size: 0.55rem;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  #about { padding-right: 210px; } /* make room for portrait */
+
+  @media (max-width: 860px) {
+    .portrait-wrap { position: static; margin-bottom: 20px; }
+    #about { padding-right: 24px; }
+  }
+  [contenteditable="true"] { outline: none; border-radius: 2px; transition: background 0.2s; }
+  [contenteditable="true"]:hover { background: rgba(201,168,76,0.07); }
+  [contenteditable="true"]:focus { background: rgba(201,168,76,0.12); box-shadow: 0 0 0 1px rgba(201,168,76,0.4); }
+
+  .edit-hint {
+    position: fixed; bottom: 20px; right: 22px;
+    background: var(--navy); color: rgba(255,255,255,0.65);
+    font-size: 0.63rem; padding: 7px 13px;
+    border-radius: 3px; letter-spacing: 0.06em; text-transform: uppercase;
+    border-left: 2px solid var(--gold); z-index: 200;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 860px) {
+    body { flex-direction: column; }
+    #sidebar { width: 100%; min-height: auto; position: relative; }
+    #main { margin-left: 0; }
+    .section { padding: 48px 24px; }
+    .bio-grid, .scores-row, .elective-grid, .award-grid, .gallery-row { grid-template-columns: 1fr; }
+    .hero-name { font-size: 2.8rem; }
+    .section-title { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-name">Harshit Narula, MBBS</div>
+    <div class="sidebar-title">Chief Resident, Internal Medicine<br>Sinai Hospital of Baltimore</div>
+    <div class="sidebar-sub">Hematology-Oncology Fellowship Applicant</div>
+  </div>
+
+  <div class="nav-track">
+    <div class="slider-pill" id="sliderPill"></div>
+    <nav id="sideNav">
+      <a href="#about"         class="nav-link active"><span class="nav-dot"></span>About</a>
+      <a href="#experience"    class="nav-link"><span class="nav-dot"></span>Experience</a>
+      <a href="#research"      class="nav-link"><span class="nav-dot"></span>Research & QI</a>
+      <a href="#publications"  class="nav-link"><span class="nav-dot"></span>Publications</a>
+      <a href="#presentations" class="nav-link"><span class="nav-dot"></span>Presentations</a>
+      <a href="#awards"        class="nav-link"><span class="nav-dot"></span>Awards</a>
+    </nav>
+  </div>
+
+  <div class="sidebar-links">
+    <a href="https://www.linkedin.com/in/your-profile" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      LinkedIn
+    </a>
+    <a href="https://twitter.com/your-handle" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M4 4l16 16M20 4L4 20"/></svg>
+      X / Twitter
+    </a>
+    <a href="https://www.researchgate.net/profile/your-profile" target="_blank">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M8 8h8M8 16h5"/></svg>
+      ResearchGate
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN — single continuous page -->
+<main id="main">
+
+  <!-- ① ABOUT -->
+  <section class="section" id="about">
+
+    <!-- PORTRAIT — top right -->
+    <!-- Replace 'your-photo.jpg' with your actual photo filename, placed in same folder as index.html -->
+    <div class="portrait-wrap">
+      <div class="portrait" id="portraitBox">
+        <img src="your-photo.jpg" alt="Harshit Narula"
+             onerror="this.parentElement.innerHTML='<div class=\'portrait-placeholder\'><svg viewBox=\'0 0 24 24\' stroke-width=\'1.2\'><circle cx=\'12\' cy=\'8\' r=\'4\'/><path d=\'M4 20c0-4 3.6-7 8-7s8 3 8 7\'/></svg><span>Add your photo</span></div>'">
+      </div>
+    </div>
+    <div class="hero-eyebrow">Physician · Researcher · Educator</div>
+    <h1 class="hero-name" contenteditable="true">Harshit Narula, MBBS</h1>
+    <div class="hero-titles">
+      <div class="hero-title-line">
+        <span>Internal Medicine Chief Resident</span>
+        <span>Sinai Hospital of Baltimore</span>
+        <span>Hematology-Oncology Fellowship Applicant</span>
+      </div>
+    </div>
+    <div class="hero-divider"></div>
+
+    <div class="bio-grid">
+      <div>
+        <p class="bio-text" contenteditable="true">
+          Internal Medicine Chief Resident at Sinai Hospital of Baltimore with a dedicated career focus in Hematology-Oncology, health outcomes research, and academic leadership.
+        </p>
+        <p class="bio-body" contenteditable="true">
+          As an aspiring physician-scientist, I am driven by a deep love for teaching, mentorship, and direct patient care. I am fully committed to advancing the field through research, quality improvement, and exceptional clinical service.
+        </p>
+        <div class="interest-tags">
+          <h4>Research & Scholarly Interests</h4>
+          <span class="tag">Hematology-Oncology</span>
+          <span class="tag">Molecular Surveillance</span>
+          <span class="tag">Patient Safety & QI</span>
+          <span class="tag">Palliative Care</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="philosophy-box">
+          <div class="philosophy-label">Research Philosophy</div>
+          <div class="philosophy-text" contenteditable="true">
+            My clinical perspective fuels my research interests in treatment optimization and predictive oncology. By leveraging clinical data and advanced technologies — such as ctDNA and frailty scores — my goal is to maximize therapeutic efficacy, ensuring patients who will truly benefit from targeted treatments receive them, while safely sparing others from unnecessary toxicities.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scores-row">
+      <div class="score-card">
+        <div class="score-val">245</div>
+        <div class="score-label">USMLE Step 1</div>
+      </div>
+      <div class="score-card">
+        <div class="score-val">250</div>
+        <div class="score-label">USMLE Step 2 CK</div>
+      </div>
+      <div class="score-card">
+        <div class="score-val">243</div>
+        <div class="score-label">USMLE Step 3</div>
+      </div>
+      <div class="score-card">
+        <div class="score-val" style="font-size:1.5rem; line-height:1.2">Rank<br>273</div>
+        <div class="score-label" style="margin-top:6px; line-height:1.6">AIPMT 2015<br>India's National Pre-Medical Test<br>Top 0.05% of 600,000+</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ② EXPERIENCE -->
+  <section class="section" id="experience">
+    <div class="section-label">Career</div>
+    <h2 class="section-title">Experience & Training</h2>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">July 2026 – June 2027</div>
+        <div class="timeline-role" contenteditable="true">Chief Resident, Internal Medicine (PGY-4)</div>
+        <div class="timeline-org" contenteditable="true">Sinai Hospital of Baltimore</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">July 2025 – June 2026</div>
+        <div class="timeline-role" contenteditable="true">Internal Medicine Resident (PGY-3) · Junior Chief Resident</div>
+        <div class="timeline-org" contenteditable="true">Sinai Hospital of Baltimore</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">July 2023 – June 2026</div>
+        <div class="timeline-role" contenteditable="true">Internal Medicine Residency</div>
+        <div class="timeline-org" contenteditable="true">Sinai Hospital of Baltimore</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2015 – 2022</div>
+        <div class="timeline-role" contenteditable="true">MBBS — Passed with Honors</div>
+        <div class="timeline-org" contenteditable="true">King George's Medical University (KGMU), India · Top-10 nationally ranked among 500+ medical schools</div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-bottom:14px; margin-top: 8px;">Oncology Electives</div>
+    <div class="elective-grid">
+      <div class="elective-card">
+        <div class="e-title" contenteditable="true">Inpatient Benign Hematology</div>
+        <div class="e-meta" contenteditable="true">MedStar Georgetown Cancer Center · 4 weeks · April 2024</div>
+      </div>
+      <div class="elective-card">
+        <div class="e-title" contenteditable="true">Inpatient Solid Oncology</div>
+        <div class="e-meta" contenteditable="true">Sidney Kimmel Cancer Center, Johns Hopkins · 4 weeks · December 2024</div>
+      </div>
+      <div class="elective-card">
+        <div class="e-title" contenteditable="true">Solid Oncology Consult</div>
+        <div class="e-meta" contenteditable="true">Sidney Kimmel Cancer Center, Johns Hopkins · 4 weeks · April 2025</div>
+      </div>
+      <div class="elective-card">
+        <div class="e-title" contenteditable="true">Bladder Cancer Research Rotation</div>
+        <div class="e-meta" contenteditable="true">Johns Hopkins Brady Urological Institute · Under Dr. Burles Johnson · November 2025 – present</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ RESEARCH & QI -->
+  <section class="section" id="research">
+    <div class="section-label">Scholarship</div>
+    <h2 class="section-title">Research & Quality Improvement</h2>
+
+    <div class="research-card">
+      <div class="rc-title" contenteditable="true">VTE Prophylaxis Auto-Population — EMR Safety Intervention</div>
+      <div class="rc-meta">M&M Grand Rounds Presenter · Sinai Hospital of Baltimore · July 2025</div>
+      <div class="rc-body" contenteditable="true">Led institution-wide M&M Grand Rounds on a patient who developed symptomatic DVT after VTE prophylaxis was inadvertently discontinued. Conducted root cause analysis identifying copy-forwarded notes as the central failure mode. Collaborating with Hospital IT to deploy a CCL script enabling active VTE prophylaxis and anticoagulation orders to auto-populate in resident progress notes in real time.</div>
+    </div>
+
+    <div class="research-card">
+      <div class="rc-title" contenteditable="true">Investigating Inconsistencies in ctDNA Molecular Surveillance</div>
+      <div class="rc-meta">IRB-Approved · Johns Hopkins University · 2025–Present</div>
+      <div class="rc-body" contenteditable="true">Working under the mentorship of GU oncologist Dr. Burles A. Johnson to investigate complex inconsistencies in ctDNA molecular surveillance. Study team member on an IRB-approved protocol led by Dr. Jean Hoffman-Censits.</div>
+    </div>
+
+    <div class="research-card">
+      <div class="rc-title" contenteditable="true">Evaluating Chemotherapy Outcomes Based on Functional Status</div>
+      <div class="rc-meta">Real-World Data Study · In Development · 2026</div>
+      <div class="rc-body" contenteditable="true">Serving as first author on an early-stage, real-world data study evaluating frailty assessments and exploring chemotherapy outcomes. Operating under the direct mentorship of surgical oncologists Dr. Arun Mavanur and Dr. Joshua Wolf.</div>
+    </div>
+
+    <div class="research-card">
+      <div class="rc-title" contenteditable="true">Cancer Screening QI Initiative</div>
+      <div class="rc-meta">Co-Lead Investigator · 2026–present</div>
+      <div class="rc-body" contenteditable="true">QI initiative to increase uptake of breast, lung, and colorectal cancer screening in an underserved patient population at the Resident-Run Community Clinic, Sinai Hospital of Baltimore, with the goal of improving rates of early cancer detection. Under mentorship of Dr. Sugumar.</div>
+    </div>
+  </section>
+
+  <!-- ④ PUBLICATIONS -->
+  <section class="section" id="publications">
+    <div class="section-label">Peer-Reviewed Work</div>
+    <h2 class="section-title">Publications</h2>
+
+    <div class="pub-group">
+      <div class="pub-group-title">Original Manuscripts</div>
+      <div class="pub-item">
+        <div class="pub-bullet"></div>
+        <div class="pub-text" contenteditable="true"><strong>Babu AD, Narula H, et al.</strong> Comparative Insights on Inpatient Outcomes in Diastolic Heart Failure with and Without Amyloidosis: A Nationwide Propensity-Matched Analysis. <em>Journal of Cardiovascular Development and Disease</em>, vol. 12, no. 5, May 2025. <a href="https://doi.org/10.3390/jcdd12050190" target="_blank">DOI →</a></div>
+      </div>
+      <div class="pub-item">
+        <div class="pub-bullet"></div>
+        <div class="pub-text" contenteditable="true"><strong>Narula H, et al.</strong> Anatomical Variations of Coronary Arteries in North Indian Population. <em>IOSR Journal of Dental and Medical Sciences</em>, Feb. 2018. <a href="https://doi.org/10.9790/0853-1702052126" target="_blank">DOI →</a></div>
+      </div>
+    </div>
+
+    <div class="pub-group">
+      <div class="pub-group-title">Systematic Review & Meta-Analysis</div>
+      <div class="pub-item">
+        <div class="pub-bullet"></div>
+        <div class="pub-text" contenteditable="true"><strong>Srikanth S, Narula H, et al.</strong> Impact of D-Dimer on In-Hospital Mortality Following Aortic Dissection. <em>Journal of the American College of Cardiology</em>, vol. 81, no. 8, Mar. 2023. <a href="https://doi.org/10.1016/S0735-1097(23)02504-4" target="_blank">DOI →</a></div>
+      </div>
+    </div>
+
+    <div class="pub-group">
+      <div class="pub-group-title">Literature Review & Perspective</div>
+      <div class="pub-item">
+        <div class="pub-bullet"></div>
+        <div class="pub-text" contenteditable="true"><strong>Tripathi KM, Narula H.</strong> Returning to the Hallmarks of Cancer: A Brief Review and Revision. <em>Journal of Clinical Research and Reports</em>, vol. 9, no. 2, Oct. 2021. <a href="https://doi.org/10.31579/2690-1919/200" target="_blank">DOI →</a></div>
+      </div>
+      <div class="pub-item">
+        <div class="pub-bullet"></div>
+        <div class="pub-text" contenteditable="true"><strong>Agrawal V, Narula H, et al.</strong> Lack of Quality Clinical Data on Co-Infections Among Malaria Patients. <em>Tropical Doctor</em>, vol. 53, no. 1, Jan. 2023. <a href="https://doi.org/10.1177/00494755221136178" target="_blank">DOI →</a></div>
+      </div>
+    </div>
+
+    <div class="pub-group">
+      <div class="pub-group-title">Published Abstracts</div>
+      <div class="pub-item">
+        <div class="pub-bullet"></div>
+        <div class="pub-text" contenteditable="true"><strong>Narula H, et al.</strong> Obesity Paradox and Its Impact on HFpEF in Geriatric Patients. <em>Circulation</em>, vol. 146, Suppl. 1, Nov. 2022. <a href="https://doi.org/10.1161/circ.146.suppl_1.14273" target="_blank">DOI →</a></div>
+      </div>
+    </div>
+
+    <div class="pub-group">
+      <div class="pub-group-title">Accepted for Publication — 2026 ASCO Annual Meeting</div>
+      <div class="pub-item">
+        <div class="pub-bullet"></div>
+        <div class="pub-text" contenteditable="true"><strong>Tewari J, …, Narula H (last author).</strong> Histology and Stage-Specific Incidence Trends in Appendiceal Adenocarcinoma in the US, 2000–2022: A SEER Analysis. Abstract 551122.</div>
+      </div>
+      <div class="pub-item">
+        <div class="pub-bullet"></div>
+        <div class="pub-text" contenteditable="true"><strong>Atunde FJ, …, Narula H, et al.</strong> Durvalumab Consolidation After Definitive Chemoradiotherapy in Unresectable Stage III NSCLC. Abstract 534032.</div>
+      </div>
+      <div class="pub-item">
+        <div class="pub-bullet"></div>
+        <div class="pub-text" contenteditable="true"><strong>Atunde FJ, …, Narula H, et al.</strong> Global Evolution of HER2-Targeted Clinical Trials Across Solid Tumors. Abstract 542726.</div>
+      </div>
+      <div class="pub-item">
+        <div class="pub-bullet"></div>
+        <div class="pub-text" contenteditable="true"><strong>Pandey A, …, Narula H, et al.</strong> GLP-1 Medication Uptake Among US Cancer Survivors with Diabetes. Abstract 548466.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑤ PRESENTATIONS -->
+  <section class="section" id="presentations">
+    <div class="section-label">Conferences</div>
+    <h2 class="section-title">Presentations</h2>
+
+    <div class="pub-group-title" style="margin-bottom:14px;">Upcoming — 2026</div>
+
+    <div class="pres-card">
+      <div class="pres-badge green-badge">ASCO 2026</div>
+      <div>
+        <div class="pres-title" contenteditable="true">Cost-Effectiveness Analysis of First-Line Therapies for Advanced Urothelial Carcinoma from a U.S. Payer Perspective</div>
+        <div class="pres-meta" contenteditable="true">Co-Presenter · 2026 ASCO Annual Meeting · Abstract 556638 · May 31, 9am–12pm</div>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-badge gold-badge">ASCO 2026</div>
+      <div>
+        <div class="pres-title" contenteditable="true">Intracranial Outcomes with Next-Generation ALK Inhibitors vs. Crizotinib in First-Line ALK+ NSCLC: A Meta-Analysis of Phase III Randomized Trials</div>
+        <div class="pres-meta" contenteditable="true">Presenting Author · 2026 ASCO Breakthrough Meeting</div>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-badge">CHEST 2026</div>
+      <div>
+        <div class="pres-title" contenteditable="true">Predictors of Community Discharge and Clinical Outcomes After Mechanical Ventilation in Metastatic Lung Cancer: A Nationwide Inpatient Sample Study</div>
+        <div class="pres-meta" contenteditable="true">Presenting Author · Submitted to CHEST 2026</div>
+      </div>
+    </div>
+
+    <div class="pub-group-title" style="margin: 28px 0 14px;">Award-Winning Presentations</div>
+
+    <div class="pres-card">
+      <div class="pres-badge silver-badge">🥈 Silver Medal</div>
+      <div>
+        <div class="pres-title" contenteditable="true">Unmasking Stiff Person Syndrome: A Rare Mimic of Seizures and Neuroleptic Malignant Syndrome</div>
+        <div class="pres-meta" contenteditable="true">Clinical Vignette · Maryland ACP 2025</div>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-badge gold-badge">🥇 Gold Medal</div>
+      <div>
+        <div class="pres-title" contenteditable="true">Resistance to Tenofovir in a Patient Treated for HBV Infection</div>
+        <div class="pres-meta" contenteditable="true">Clinical Vignette · ACP India Chapter Annual Meeting · Lucknow · 2018</div>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-badge">ACP 2020</div>
+      <div>
+        <div class="pres-title" contenteditable="true">Scrub Typhus Presenting with Hemiparesis: A Rare Occurrence</div>
+        <div class="pres-meta" contenteditable="true">Virtual Poster · ACP India Chapter Annual Meeting · August 2020</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑥ AWARDS -->
+  <section class="section" id="awards">
+    <div class="section-label">Recognition</div>
+    <h2 class="section-title">Awards & Honors</h2>
+
+    <div class="award-grid">
+      <div class="award-card">
+        <div class="award-title" contenteditable="true">Above & Beyond Award — Block 10 (2025–2026)</div>
+        <div class="award-meta" contenteditable="true">Sinai Hospital of Baltimore · Outstanding dedication, professionalism, and patient care</div>
+      </div>
+      <div class="award-card">
+        <div class="award-title" contenteditable="true">Above & Beyond Award — Block 13 (2024–2025)</div>
+        <div class="award-meta" contenteditable="true">Sinai Hospital of Baltimore</div>
+      </div>
+      <div class="award-card">
+        <div class="award-title" contenteditable="true">Silver Prize — Maryland ACP Jeopardy 2024</div>
+        <div class="award-meta" contenteditable="true">Sole participant from Sinai Hospital of Baltimore</div>
+      </div>
+      <div class="award-card">
+        <div class="award-title" contenteditable="true">Gold Medal — ACP India Chapter 2018</div>
+        <div class="award-meta" contenteditable="true">Clinical Vignette · Medical Student/Resident Category</div>
+      </div>
+      <div class="award-card">
+        <div class="award-title" contenteditable="true">Silver Prize — SS Khan Dissection Competition</div>
+        <div class="award-meta" contenteditable="true">Dept. of Anatomy, KGMU · Name engraved on Dissection Hall wall</div>
+      </div>
+      <div class="award-card">
+        <div class="award-title" contenteditable="true">Gold Medal — Inter-Medical College Debate 2015</div>
+        <div class="award-meta" contenteditable="true">KGMU</div>
+      </div>
+      <div class="award-card">
+        <div class="award-title" contenteditable="true">Honors in 6 Subjects — MBBS Professional Exams</div>
+        <div class="award-meta" contenteditable="true">Pediatrics, Anatomy, Physiology, Pathology, Microbiology, Forensic Medicine · KGMU</div>
+      </div>
+      <div class="award-card">
+        <div class="award-title" contenteditable="true">Excellence in Academics — High School 2015</div>
+        <div class="award-meta" contenteditable="true">Physics, Chemistry & Biology · Awarded annually to one student · Sant Isher Singh Public School</div>
+      </div>
+    </div>
+
+    <!-- PHOTO CAROUSEL -->
+    <div class="gallery-section">
+      <div class="gallery-label">Photos — Awards & Milestones</div>
+      <div class="carousel" id="photoCarousel">
+        <div class="carousel-track" id="carouselTrack">
+          <!-- Slides injected by JS based on photos array below -->
+        </div>
+        <div class="carousel-placeholder" id="carouselPlaceholder">
+          <svg viewBox="0 0 24 24" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Add your photos — see instructions below
+        </div>
+      </div>
+      <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+  </section>
+
+</main>
+
+<div class="edit-hint">✎ Click any text to edit</div>
+
+<script>
+  // ── ANIMATED SLIDER PILL ──
+  const links    = document.querySelectorAll('.nav-link');
+  const pill     = document.getElementById('sliderPill');
+  const track    = document.querySelector('.nav-track');
+  const sections = Array.from(links).map(l => document.querySelector(l.getAttribute('href')));
+
+  function movePill(link) {
+    const trackRect = track.getBoundingClientRect();
+    const linkRect  = link.getBoundingClientRect();
+    pill.style.top    = (linkRect.top - trackRect.top + track.scrollTop) + 'px';
+    pill.style.height = linkRect.height + 'px';
+  }
+
+  function setActive(link) {
+    links.forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    movePill(link);
+  }
+
+  // Click nav
+  links.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      target.scrollIntoView({ behavior: 'smooth' });
+      setActive(link);
+    });
+  });
+
+  // Scroll spy
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = sections.indexOf(entry.target);
+        if (idx !== -1) setActive(links[idx]);
+      }
+    });
+  }, { threshold: 0.25 });
+
+  sections.forEach(s => { if (s) observer.observe(s); });
+
+  // Init pill position
+  window.addEventListener('load', () => {
+    const activeLink = document.querySelector('.nav-link.active');
+    if (activeLink) movePill(activeLink);
+  });
+
+  // ── AUTO-ROTATING CAROUSEL ──
+  // ↓↓ EDIT YOUR PHOTOS HERE ↓↓
+  // Put your image files in the same folder as index.html
+  // Then replace the filenames and captions below
+  const photos = [
+    { src: 'photo1.jpg', caption: 'Maryland ACP 2025 — Silver Medal' },
+    { src: 'photo2.jpg', caption: 'ACP India Chapter 2018 — Gold Medal' },
+    { src: 'photo3.jpg', caption: 'Above & Beyond Award 2025' },
+    { src: 'photo4.jpg', caption: 'Above & Beyond Award 2026' },
+    { src: 'photo5.jpg', caption: 'ASCO 2026' },
+    { src: 'photo6.jpg', caption: 'Sinai Hospital of Baltimore' },
+  ];
+  // ↑↑ EDIT YOUR PHOTOS HERE ↑↑
+
+  const track       = document.getElementById('carouselTrack');
+  const dotsWrap    = document.getElementById('carouselDots');
+  const placeholder = document.getElementById('carouselPlaceholder');
+  let current = 0;
+  let timer;
+
+  function buildCarousel() {
+    if (!photos.length) return;
+    placeholder.style.display = 'none';
+
+    photos.forEach((p, i) => {
+      // Slide
+      const slide = document.createElement('div');
+      slide.className = 'carousel-slide';
+      const img = document.createElement('img');
+      img.src = p.src;
+      img.alt = p.caption;
+      img.onerror = () => { slide.style.display = 'none'; };
+      const cap = document.createElement('div');
+      cap.className = 'slide-caption';
+      cap.textContent = p.caption;
+      slide.appendChild(img);
+      slide.appendChild(cap);
+      track.appendChild(slide);
+
+      // Dot
+      const dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(dot);
+    });
+
+    goTo(0);
+    startTimer();
+  }
+
+  function goTo(n) {
+    current = (n + photos.length) % photos.length;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    document.querySelectorAll('.carousel-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+    });
+  }
+
+  function startTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => goTo(current + 1), 3500);
+  }
+
+  // Pause on hover
+  document.getElementById('photoCarousel').addEventListener('mouseenter', () => clearInterval(timer));
+  document.getElementById('photoCarousel').addEventListener('mouseleave', startTimer);
+
+  buildCarousel();
+</script>
+</body>
+</html>
