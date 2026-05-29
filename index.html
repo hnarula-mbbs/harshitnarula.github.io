@@ -1173,7 +1173,7 @@
   // Just put photo1.jpg, photo2.jpg ... photo6.jpg in the same folder as index.html
   const photos = ['photo1.jpg','photo2.jpg','photo3.jpg','photo4.jpg','photo5.jpg','photo6.jpg'];
 
-  const track       = document.getElementById('carouselTrack');
+  const carTrack    = document.getElementById('carouselTrack');
   const dotsWrap    = document.getElementById('carouselDots');
   const placeholder = document.getElementById('carouselPlaceholder');
   let current = 0;
@@ -1191,11 +1191,11 @@
         imgEl.src = src;
         imgEl.alt = '';
         slide.appendChild(imgEl);
-        track.appendChild(slide);
+        carTrack.appendChild(slide);
         const dot = document.createElement('button');
         dot.className = 'carousel-dot' + (loadedCount === 1 ? ' active' : '');
         dot.addEventListener('click', () => {
-          goTo(Array.from(track.children).indexOf(slide));
+          goTo(Array.from(carTrack.children).indexOf(slide));
         });
         dotsWrap.appendChild(dot);
         if (loadedCount === 1) {
@@ -1211,7 +1211,7 @@
 
   function goTo(n) {
     current = (n + photos.length) % photos.length;
-    track.style.transform = `translateX(-${current * 100}%)`;
+    carTrack.style.transform = `translateX(-${current * 100}%)`;
     document.querySelectorAll('.carousel-dot').forEach((d, i) => {
       d.classList.toggle('active', i === current);
     });
