@@ -1207,23 +1207,27 @@
 
   function buildCarousel() {
     let loadedCount = 0;
-    photos.forEach(src => {
+    const total = photos.length;
+
+    photos.forEach((src, i) => {
+      // Pre-create slide and dot in correct order
+      const slide = document.createElement('div');
+      slide.className = 'carousel-slide';
+      const imgEl = document.createElement('img');
+      imgEl.alt = '';
+      slide.appendChild(imgEl);
+      carTrack.appendChild(slide);
+
+      const dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => { goTo(i); startTimer(); });
+      dotsWrap.appendChild(dot);
+
+      // Load image
       const img = new Image();
       function handleLoad() {
-        loadedCount++;
-        const slide = document.createElement('div');
-        slide.className = 'carousel-slide';
-        const imgEl = document.createElement('img');
         imgEl.src = src;
-        imgEl.alt = '';
-        slide.appendChild(imgEl);
-        carTrack.appendChild(slide);
-        const dot = document.createElement('button');
-        dot.className = 'carousel-dot' + (loadedCount === 1 ? ' active' : '');
-        dot.addEventListener('click', () => {
-          goTo(Array.from(carTrack.children).indexOf(slide));
-        });
-        dotsWrap.appendChild(dot);
+        loadedCount++;
         if (loadedCount === 1) {
           placeholder.style.display = 'none';
           goTo(0);
@@ -1231,9 +1235,8 @@
         }
       }
       img.onload = handleLoad;
-      img.onerror = () => {};
+      img.onerror = () => { slide.style.display = 'none'; };
       img.src = src;
-      // If already cached, onload won't fire — trigger manually
       if (img.complete && img.naturalWidth) handleLoad();
     });
   }
