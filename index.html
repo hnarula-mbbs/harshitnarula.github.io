@@ -580,37 +580,62 @@
   .gallery-section { margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--cream-dark); }
   .gallery-label { font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
 
-  /* ── PHOTO GRID GALLERY ── */
-  .photo-grid {
+  /* ── PHOTO STRIP (2 rows, horizontal scroll) ── */
+  .photo-strip {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-auto-flow: column;        /* fill down each column, then move right */
+    grid-template-rows: repeat(2, auto);
+    grid-auto-columns: 230px;      /* fixed tile width = uniform sizing */
     gap: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 12px;
+    scroll-snap-type: x proximity;
+    /* slim gold-on-cream scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: var(--gold) var(--cream-dark);
   }
+  .photo-strip::-webkit-scrollbar { height: 8px; }
+  .photo-strip::-webkit-scrollbar-track { background: var(--cream-dark); border-radius: 4px; }
+  .photo-strip::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 4px; }
 
   .photo-tile {
     position: relative;
-    width: 100%;
-    aspect-ratio: 4 / 3;
+    width: 230px;
+    aspect-ratio: 3 / 4;           /* portrait tile suits these photos */
     overflow: hidden;
     background: var(--navy);
     border-radius: 4px;
     box-shadow: 0 2px 10px rgba(13,31,60,0.12);
+    scroll-snap-align: start;
   }
 
   .photo-tile img {
     width: 100%;
     height: 100%;
-    object-fit: cover;   /* fills tile uniformly, no shrinking/distortion */
+    object-fit: contain;  /* shows the whole photo, no cropping */
     object-position: center;
     display: block;
     transition: transform 0.4s ease;
   }
 
-  .photo-tile:hover img { transform: scale(1.04); }
+  .photo-tile:hover img { transform: scale(1.03); }
+
+  .strip-hint {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
 
   .gallery-placeholder {
-    grid-column: 1 / -1;
-    aspect-ratio: 3 / 1;
+    grid-row: 1 / span 2;
+    width: 480px;
+    aspect-ratio: auto;
     background: var(--navy);
     border-radius: 4px;
     display: flex;
@@ -631,8 +656,10 @@
     fill: none;
   }
 
-  @media (max-width: 900px) { .photo-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 560px) { .photo-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) {
+    .photo-strip { grid-auto-columns: 180px; }
+    .photo-tile { width: 180px; }
+  }
 
   /* ── PORTRAIT PHOTO ── */
   .portrait-wrap {
@@ -1095,11 +1122,15 @@
     <!-- PHOTO CAROUSEL -->
     <div class="gallery-section">
       <div class="gallery-label">Photos — Awards & Milestones</div>
-      <div class="photo-grid" id="photoGrid">
+      <div class="photo-strip" id="photoGrid">
         <div class="gallery-placeholder" id="galleryPlaceholder">
           <svg viewBox="0 0 24 24" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
           Add your photos — see instructions below
         </div>
+      </div>
+      <div class="strip-hint">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        Scroll sideways to see more
       </div>
     </div>
   </section>
@@ -1156,10 +1187,12 @@
     if (activeLink) movePill(activeLink);
   });
 
-  // ── PHOTO GRID ──
-  // Just put photo1.jpg, photo2.jpg ... photo6.jpg in the same folder as index.html.
-  // Every photo is rendered in a uniform 4:3 tile (object-fit: cover), so mismatched
-  // source dimensions all display at the same size without shrinking or distortion.
+  // ── PHOTO STRIP ──
+  // Put photo1.jpg ... photo6.jpg in the same folder as index.html.
+  // Each photo sits in a uniform portrait tile (object-fit: contain), so they all
+  // display at the same size with no cropping. The strip lays them out in 2 rows
+  // and scrolls horizontally. (your-photo.jpg is the hero headshot up top and is
+  // intentionally NOT repeated here.)
   const photos = ['photo1.jpg','photo2.jpg','photo3.jpg','photo4.jpg','photo5.jpg','photo6.jpg'];
 
   const photoGrid  = document.getElementById('photoGrid');
