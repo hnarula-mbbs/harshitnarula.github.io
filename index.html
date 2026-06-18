@@ -580,99 +580,39 @@
   .gallery-section { margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--cream-dark); }
   .gallery-label { font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
 
-  .carousel {
+  /* ── PHOTO GRID GALLERY ── */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .photo-tile {
     position: relative;
     width: 100%;
-    height: 380px;
+    aspect-ratio: 4 / 3;
     overflow: hidden;
     background: var(--navy);
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(13,31,60,0.12);
   }
 
-  .carousel-track {
-    display: flex;
+  .photo-tile img {
+    width: 100%;
     height: 100%;
-    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .carousel-slide {
-    min-width: 100%;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-    background: var(--navy);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .carousel-slide img {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
+    object-fit: cover;   /* fills tile uniformly, no shrinking/distortion */
+    object-position: center;
     display: block;
+    transition: transform 0.4s ease;
   }
 
-  /* Caption overlay */
-  .carousel-slide .slide-caption {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 10px 18px;
-    background: linear-gradient(to top, rgba(13,31,60,0.85), transparent);
-    font-size: 0.72rem;
-    color: rgba(255,255,255,0.88);
-    letter-spacing: 0.04em;
-  }
+  .photo-tile:hover img { transform: scale(1.04); }
 
-  .carousel-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(13,31,60,0.5);
-    border: none;
-    color: rgba(255,255,255,0.85);
-    font-size: 1.4rem;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    transition: background 0.2s;
-  }
-
-  .carousel-arrow:hover { background: rgba(13,31,60,0.85); }
-  .carousel-arrow.left  { left: 12px; }
-  .carousel-arrow.right { right: 12px; }
-  .carousel-dots {
-    display: flex;
-    justify-content: center;
-    gap: 7px;
-    margin-top: 12px;
-  }
-
-  .carousel-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--cream-dark);
-    cursor: pointer;
-    transition: background 0.3s, transform 0.3s;
-    border: none;
-    padding: 0;
-  }
-
-  .carousel-dot.active {
-    background: var(--gold);
-    transform: scale(1.3);
-  }
-
-  /* Placeholder when no images loaded */
-  .carousel-placeholder {
-    width: 100%;
-    height: 100%;
+  .gallery-placeholder {
+    grid-column: 1 / -1;
+    aspect-ratio: 3 / 1;
+    background: var(--navy);
+    border-radius: 4px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -682,13 +622,17 @@
     font-size: 0.72rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    text-align: center;
   }
 
-  .carousel-placeholder svg {
+  .gallery-placeholder svg {
     width: 36px; height: 36px;
     stroke: rgba(201,168,76,0.3);
     fill: none;
   }
+
+  @media (max-width: 900px) { .photo-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .photo-grid { grid-template-columns: 1fr; } }
 
   /* ── PORTRAIT PHOTO ── */
   .portrait-wrap {
@@ -1151,16 +1095,12 @@
     <!-- PHOTO CAROUSEL -->
     <div class="gallery-section">
       <div class="gallery-label">Photos — Awards & Milestones</div>
-      <div class="carousel" id="photoCarousel">
-        <div class="carousel-track" id="carouselTrack"></div>
-        <div class="carousel-placeholder" id="carouselPlaceholder">
+      <div class="photo-grid" id="photoGrid">
+        <div class="gallery-placeholder" id="galleryPlaceholder">
           <svg viewBox="0 0 24 24" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
           Add your photos — see instructions below
         </div>
-        <button class="carousel-arrow left"  id="arrowLeft">&#8249;</button>
-        <button class="carousel-arrow right" id="arrowRight">&#8250;</button>
       </div>
-      <div class="carousel-dots" id="carouselDots"></div>
     </div>
   </section>
 
@@ -1216,74 +1156,44 @@
     if (activeLink) movePill(activeLink);
   });
 
-  // ── AUTO-ROTATING CAROUSEL ──
-  // Just put photo1.jpg, photo2.jpg ... photo6.jpg in the same folder as index.html
+  // ── PHOTO GRID ──
+  // Just put photo1.jpg, photo2.jpg ... photo6.jpg in the same folder as index.html.
+  // Every photo is rendered in a uniform 4:3 tile (object-fit: cover), so mismatched
+  // source dimensions all display at the same size without shrinking or distortion.
   const photos = ['photo1.jpg','photo2.jpg','photo3.jpg','photo4.jpg','photo5.jpg','photo6.jpg'];
 
-  const carTrack    = document.getElementById('carouselTrack');
-  const dotsWrap    = document.getElementById('carouselDots');
-  const placeholder = document.getElementById('carouselPlaceholder');
-  let current = 0;
-  let timer;
+  const photoGrid  = document.getElementById('photoGrid');
+  const placeholder = document.getElementById('galleryPlaceholder');
 
-  function buildCarousel() {
+  function buildGrid() {
     let loadedCount = 0;
-    const total = photos.length;
 
-    photos.forEach((src, i) => {
-      // Pre-create slide and dot in correct order
-      const slide = document.createElement('div');
-      slide.className = 'carousel-slide';
+    photos.forEach((src) => {
+      const tile = document.createElement('div');
+      tile.className = 'photo-tile';
+      tile.style.display = 'none';
+
       const imgEl = document.createElement('img');
       imgEl.alt = '';
-      slide.appendChild(imgEl);
-      carTrack.appendChild(slide);
+      imgEl.loading = 'lazy';
+      tile.appendChild(imgEl);
+      photoGrid.appendChild(tile);
 
-      const dot = document.createElement('button');
-      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-      dot.addEventListener('click', () => { goTo(i); startTimer(); });
-      dotsWrap.appendChild(dot);
-
-      // Load image
       const img = new Image();
       function handleLoad() {
         imgEl.src = src;
+        tile.style.display = '';
         loadedCount++;
-        if (loadedCount === 1) {
-          placeholder.style.display = 'none';
-          goTo(0);
-          startTimer();
-        }
+        if (loadedCount === 1) placeholder.style.display = 'none';
       }
       img.onload = handleLoad;
-      img.onerror = () => { slide.style.display = 'none'; };
+      img.onerror = () => { tile.remove(); };
       img.src = src;
       if (img.complete && img.naturalWidth) handleLoad();
     });
   }
 
-  function goTo(n) {
-    current = (n + photos.length) % photos.length;
-    carTrack.style.transform = `translateX(-${current * 100}%)`;
-    document.querySelectorAll('.carousel-dot').forEach((d, i) => {
-      d.classList.toggle('active', i === current);
-    });
-  }
-
-  function startTimer() {
-    clearInterval(timer);
-    timer = setInterval(() => goTo(current + 1), 6000);
-  }
-
-  // Arrows
-  document.getElementById('arrowLeft').addEventListener('click', () => { goTo(current - 1); startTimer(); });
-  document.getElementById('arrowRight').addEventListener('click', () => { goTo(current + 1); startTimer(); });
-
-  // Pause on hover
-  document.getElementById('photoCarousel').addEventListener('mouseenter', () => clearInterval(timer));
-  document.getElementById('photoCarousel').addEventListener('mouseleave', startTimer);
-
-  buildCarousel();
+  buildGrid();
 </script>
 </body>
 </html>
