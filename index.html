@@ -580,34 +580,22 @@
   .gallery-section { margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--cream-dark); }
   .gallery-label { font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
 
-  /* ── PHOTO STRIP (2 rows, horizontal scroll) ── */
+  /* ── PHOTO GRID (2 rows × 3 columns) ── */
   .photo-strip {
     display: grid;
-    grid-auto-flow: column;        /* fill down each column, then move right */
-    grid-template-rows: repeat(2, auto);
-    grid-auto-columns: 230px;      /* fixed tile width = uniform sizing */
+    grid-template-columns: repeat(3, 1fr);
     gap: 14px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-bottom: 12px;
-    scroll-snap-type: x proximity;
-    /* slim gold-on-cream scrollbar */
-    scrollbar-width: thin;
-    scrollbar-color: var(--gold) var(--cream-dark);
   }
-  .photo-strip::-webkit-scrollbar { height: 8px; }
-  .photo-strip::-webkit-scrollbar-track { background: var(--cream-dark); border-radius: 4px; }
-  .photo-strip::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 4px; }
 
   .photo-tile {
     position: relative;
-    width: 230px;
+    width: 100%;
     aspect-ratio: 3 / 4;           /* portrait tile suits these photos */
     overflow: hidden;
     background: var(--navy);
     border-radius: 4px;
     box-shadow: 0 2px 10px rgba(13,31,60,0.12);
-    scroll-snap-align: start;
+    cursor: pointer;
   }
 
   .photo-tile img {
@@ -621,21 +609,23 @@
 
   .photo-tile:hover img { transform: scale(1.03); }
 
-  .strip-hint {
-    font-size: 0.62rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-top: 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  /* magnifier hint that fades in on hover */
+  .photo-tile::after {
+    content: '';
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: rgba(13,31,60,0.55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' fill='none' stroke='%23ffffff' stroke-width='2'%3E%3Ccircle cx='6.5' cy='6.5' r='4.5'/%3E%3Cline x1='10' y1='10' x2='14' y2='14'/%3E%3C/svg%3E") center / 15px no-repeat;
+    opacity: 0;
+    transition: opacity 0.25s;
+    pointer-events: none;
   }
+  .photo-tile:hover::after { opacity: 1; }
 
   .gallery-placeholder {
-    grid-row: 1 / span 2;
-    width: 480px;
-    aspect-ratio: auto;
+    grid-column: 1 / -1;
+    aspect-ratio: 3 / 1;
     background: var(--navy);
     border-radius: 4px;
     display: flex;
@@ -656,9 +646,71 @@
     fill: none;
   }
 
-  @media (max-width: 560px) {
-    .photo-strip { grid-auto-columns: 180px; }
-    .photo-tile { width: 180px; }
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,18,36,0.92);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 40px;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .lightbox.open { display: flex; opacity: 1; }
+
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 88vh;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.6);
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 22px; right: 28px;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .lightbox-close:hover { background: rgba(201,168,76,0.85); }
+
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 1.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .lightbox-nav:hover { background: rgba(201,168,76,0.85); }
+  .lightbox-nav.prev { left: 24px; }
+  .lightbox-nav.next { right: 24px; }
+
+  @media (max-width: 760px) { .photo-strip { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) {
+    .photo-strip { grid-template-columns: 1fr; }
+    .lightbox-nav { width: 40px; height: 40px; font-size: 1.5rem; }
   }
 
   /* ── PORTRAIT PHOTO ── */
@@ -1128,10 +1180,14 @@
           Add your photos — see instructions below
         </div>
       </div>
-      <div class="strip-hint">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-        Scroll sideways to see more
-      </div>
+    </div>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox">
+      <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+      <button class="lightbox-nav prev" id="lightboxPrev" aria-label="Previous">&#8249;</button>
+      <img id="lightboxImg" src="" alt="">
+      <button class="lightbox-nav next" id="lightboxNext" aria-label="Next">&#8250;</button>
     </div>
   </section>
 
@@ -1187,16 +1243,48 @@
     if (activeLink) movePill(activeLink);
   });
 
-  // ── PHOTO STRIP ──
+  // ── PHOTO GRID (2 rows × 3 columns) + LIGHTBOX ──
   // Put photo1.jpg ... photo6.jpg in the same folder as index.html.
   // Each photo sits in a uniform portrait tile (object-fit: contain), so they all
-  // display at the same size with no cropping. The strip lays them out in 2 rows
-  // and scrolls horizontally. (your-photo.jpg is the hero headshot up top and is
-  // intentionally NOT repeated here.)
+  // display at the same size with no cropping. Click any photo to enlarge it.
+  // (your-photo.jpg is the hero headshot up top and is intentionally NOT repeated here.)
   const photos = ['photo1.jpg','photo2.jpg','photo3.jpg','photo4.jpg','photo5.jpg','photo6.jpg'];
 
-  const photoGrid  = document.getElementById('photoGrid');
+  const photoGrid   = document.getElementById('photoGrid');
   const placeholder = document.getElementById('galleryPlaceholder');
+
+  // Lightbox elements
+  const lightbox    = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const loadedSrcs  = [];   // photos that actually loaded, in display order
+  let lbIndex = 0;
+
+  function openLightbox(src) {
+    lbIndex = loadedSrcs.indexOf(src);
+    lightboxImg.src = src;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function showRelative(step) {
+    if (!loadedSrcs.length) return;
+    lbIndex = (lbIndex + step + loadedSrcs.length) % loadedSrcs.length;
+    lightboxImg.src = loadedSrcs[lbIndex];
+  }
+
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  document.getElementById('lightboxPrev').addEventListener('click', (e) => { e.stopPropagation(); showRelative(-1); });
+  document.getElementById('lightboxNext').addEventListener('click', (e) => { e.stopPropagation(); showRelative(1); });
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    else if (e.key === 'ArrowLeft') showRelative(-1);
+    else if (e.key === 'ArrowRight') showRelative(1);
+  });
 
   function buildGrid() {
     let loadedCount = 0;
@@ -1205,6 +1293,7 @@
       const tile = document.createElement('div');
       tile.className = 'photo-tile';
       tile.style.display = 'none';
+      tile.addEventListener('click', () => openLightbox(src));
 
       const imgEl = document.createElement('img');
       imgEl.alt = '';
@@ -1216,6 +1305,7 @@
       function handleLoad() {
         imgEl.src = src;
         tile.style.display = '';
+        loadedSrcs.push(src);
         loadedCount++;
         if (loadedCount === 1) placeholder.style.display = 'none';
       }
@@ -1227,6 +1317,7 @@
   }
 
   buildGrid();
+
 </script>
 </body>
 </html>
