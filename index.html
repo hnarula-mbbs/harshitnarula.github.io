@@ -580,11 +580,12 @@
   .gallery-section { margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--cream-dark); }
   .gallery-label { font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
 
-  /* ── PHOTO GRID (2 rows × 3 columns) ── */
+  /* ── PHOTO GRID (single column, stacked) ── */
   .photo-strip {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr;
     gap: 14px;
+    max-width: 420px;     /* keep stacked photos a sensible width */
   }
 
   .photo-tile {
@@ -707,9 +708,8 @@
   .lightbox-nav.prev { left: 24px; }
   .lightbox-nav.next { right: 24px; }
 
-  @media (max-width: 760px) { .photo-strip { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 480px) {
-    .photo-strip { grid-template-columns: 1fr; }
+    .photo-strip { max-width: 100%; }
     .lightbox-nav { width: 40px; height: 40px; font-size: 1.5rem; }
   }
 
